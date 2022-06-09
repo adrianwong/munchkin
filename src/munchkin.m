@@ -32,7 +32,8 @@ main(!IO) :-
         io.read_named_file_as_string(InputFile, ReadRes, !IO),
         (
             ReadRes = ok(Input),
-            io.write_string(Input, !IO)
+            html.parse(Input, Node),
+            dom.print_nl(Node, !IO)
         ;
             ReadRes = error(Err),
             io.format(io.stderr_stream, "I/O error: %s.\n",

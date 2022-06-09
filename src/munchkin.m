@@ -19,6 +19,7 @@
 :- import_module string.
 
 :- import_module dom.
+:- import_module html.
 
 %------------------------------------------------------------------------------%
 

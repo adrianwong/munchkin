@@ -9,6 +9,8 @@
 :- import_module io.
 :- import_module list.
 :- import_module map.
+:- import_module maybe.
+:- import_module set.
 :- import_module string.
 
 :- type node
@@ -33,6 +35,14 @@
 
 :- func element(string, attributes, list(node)) = node.
 
+%------------------------------------------------------------------------------%
+
+:- func id(element) = maybe(string).
+
+:- func classes(element) = set(string).
+
+%------------------------------------------------------------------------------%
+
 :- pred print(node::in, io::di, io::uo) is det.
 
 :- pred print_nl(node::in, io::di, io::uo) is det.
@@ -42,6 +52,7 @@
 
 :- implementation.
 
+:- import_module char.
 :- import_module pair.
 
 %------------------------------------------------------------------------------%
@@ -52,6 +63,23 @@ text(Data) =
 element(Name, Attrs, Children) = Node :-
     Elem = element(Name, Attrs),
     Node = node(Children, element(Elem)).
+
+%------------------------------------------------------------------------------%
+
+id(Elem) =
+    ( if map.search(Elem ^ attributes, "id", Id) then
+        yes(Id)
+    else
+        no
+    ).
+
+classes(Elem) = Classes :-
+    ( if map.search(Elem ^ attributes, "class", ClassesStr) then
+        ClassesList = string.words_separator(char.is_whitespace, ClassesStr),
+        Classes = set.from_list(ClassesList)
+    else
+        Classes = set.init
+    ).
 
 %------------------------------------------------------------------------------%
 

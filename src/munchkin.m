@@ -21,6 +21,7 @@
 :- import_module css.
 :- import_module dom.
 :- import_module html.
+:- import_module style.
 
 %------------------------------------------------------------------------------%
 
@@ -36,6 +37,7 @@ main(!IO) :-
         ( if HtmlReadRes = ok(HtmlInput), CssReadRes = ok(CssInput) then
             html.parse(HtmlInput, Root),
             css.parse(CssInput, Stylesheet),
+            style.style_tree(Stylesheet, Root, _StyledRoot),
             dom.print_nl(Root, !IO),
             Stylesheet = stylesheet(Rules),
             io.write_string(format("# rules: %d\n", [i(length(Rules))]), !IO)

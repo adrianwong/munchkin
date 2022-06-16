@@ -21,7 +21,16 @@
                 children         :: list(styled_node)
             ).
 
+:- type display
+    --->    inline
+    ;       block
+    ;       none.
+
 :- pred style_tree(stylesheet::in, node::in, styled_node::out) is det.
+
+:- pred value(styled_node::in, string::in, value::out) is semidet.
+
+:- func display(styled_node) = display.
 
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
@@ -46,6 +55,25 @@ style_tree(Stylesheet, Root, StyledRoot) :-
     ),
     list.map(style_tree(Stylesheet), Root ^ children, StyledChildren),
     StyledRoot = styled_node(Root, SpecifiedValues, StyledChildren).
+
+%------------------------------------------------------------------------------%
+
+value(StyledNode, Name, Value) :-
+    SpecifiedValues = StyledNode ^ specified_values,
+    Value = map.search(SpecifiedValues, Name).
+
+display(StyledNode) = Display :-
+    ( if value(StyledNode, "display", keyword(Keyword)) then
+        ( if Keyword = "block" then
+            Display = block
+        else if Keyword = "none" then
+            Display = none
+        else
+            Display = inline
+        )
+    else
+        Display = inline
+    ).
 
 %------------------------------------------------------------------------------%
 

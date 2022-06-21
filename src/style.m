@@ -32,6 +32,8 @@
 
 :- func display(styled_node) = display.
 
+:- func lookup(styled_node, string, string, value) = value.
+
 %------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------%
 
@@ -73,6 +75,15 @@ display(StyledNode) = Display :-
         )
     else
         Display = inline
+    ).
+
+lookup(StyledNode, Name, FallbackName, DefaultValue) = Value :-
+    ( if value(StyledNode, Name, Value0) then
+        Value = Value0
+    else if value(StyledNode, FallbackName, Value0) then
+        Value = Value0
+    else
+        Value = DefaultValue
     ).
 
 %------------------------------------------------------------------------------%

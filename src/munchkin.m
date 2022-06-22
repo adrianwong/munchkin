@@ -21,6 +21,7 @@
 :- import_module css.
 :- import_module dom.
 :- import_module html.
+:- import_module layout.
 :- import_module style.
 
 %------------------------------------------------------------------------------%
@@ -35,9 +36,12 @@ main(!IO) :-
         io.read_named_file_as_string(HtmlFile, HtmlReadRes, !IO),
         io.read_named_file_as_string(CssFile, CssReadRes, !IO),
         ( if HtmlReadRes = ok(HtmlInput), CssReadRes = ok(CssInput) then
+            Viewport = ( new_dimensions ^ content ^ width := 800.0 )
+                                        ^ content ^ height := 600.0,
             html.parse(HtmlInput, Root),
             css.parse(CssInput, Stylesheet),
-            style.style_tree(Stylesheet, Root, _StyledRoot),
+            style.style_tree(Stylesheet, Root, StyledRoot),
+            layout.layout_tree(StyledRoot, Viewport, _BoxRoot),
             dom.print_nl(Root, !IO),
             Stylesheet = stylesheet(Rules),
             io.write_string(format("# rules: %d\n", [i(length(Rules))]), !IO)

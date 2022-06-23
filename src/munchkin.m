@@ -22,6 +22,7 @@
 :- import_module dom.
 :- import_module html.
 :- import_module layout.
+:- import_module painting.
 :- import_module style.
 
 %------------------------------------------------------------------------------%
